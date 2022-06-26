@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-reanimated/android/build.gradle b/node_modules/react-native-reanimated/android/build.gradle
+index cc460da..10f763c 100644
+--- a/node_modules/react-native-reanimated/android/build.gradle
++++ b/node_modules/react-native-reanimated/android/build.gradle
+@@ -131,7 +131,7 @@ abstract class replaceSoTask extends DefaultTask {
+ }
+ 
+ def detectAAR(minor, engine) {
+-    def rnMinorVersionCopy = Integer.parseInt(minor)
++    def rnMinorVersionCopy = Integer.parseInt(minor) - 1
+     def aar = file("react-native-reanimated-${rnMinorVersionCopy}-${engine}.aar")
+ 
+     if (aar.exists()) {
