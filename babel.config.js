@@ -20,6 +20,7 @@ module.exports = {
           '@models': './app/models/',
           '@constants': './app/constants/',
           '@config': './app/config/',
+          '@utils': './app/utils/',
         },
       },
     ],

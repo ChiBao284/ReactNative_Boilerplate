@@ -5,28 +5,29 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Switch} from 'react-native-paper';
 import * as themeActions from 'app/store/actions/themeActions';
 import {IThemeState} from 'app/models/reducers/theme';
-import {changeLanguage} from '@store/actions/changeLanguageActions';
+import {changeLanguage} from '@store/reducers/languageSlice';
 import i18n from 'app/i18n/i18n';
 import {useTranslation} from 'react-i18next';
 interface IState {
   themeReducer: IThemeState;
 }
-
-const ThemeController: React.FC = () => {
+import {useAppDispatch, useAppSelector} from '../utils/hook';
+const ChangeLanguageController: React.FC = () => {
   const {t} = useTranslation();
-  // const isDark = useSelector((state: IState) => state.themeReducer.isDark);
-  const isDark = true;
+  const isDark = useAppSelector(state => state.themeReducer.isDark);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const onToggleTheme = () => {
-    dispatch(themeActions.setIsDarkTheme(!isDark));
+    dispatch(changeLanguage('en'));
+    console.log('vao');
   };
   const iconName = isDark ? 'weather-night' : 'white-balance-sunny';
   const iconColor = isDark ? 'white' : 'black';
+  console.log('isDark', isDark);
 
   return (
     <View style={styles.container}>
-      <Switch value={isDark} onValueChange={onToggleTheme} />
+      <Switch value={true} onValueChange={onToggleTheme} />
       <Icon name={iconName} size={20} style={styles.icon} color={iconColor} />
     </View>
   );
@@ -42,4 +43,4 @@ const styles = StyleSheet.create({
   icon: {marginLeft: 4},
 });
 
-export default ThemeController;
+export default ChangeLanguageController;

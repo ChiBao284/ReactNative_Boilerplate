@@ -1,36 +1,32 @@
-import { createStore, compose, applyMiddleware } from 'redux';
-import { persistStore, persistCombineReducers } from 'redux-persist';
+import { configureStore } from '@reduxjs/toolkit'
+import allReducer from './reducers'
+import { persistStore, persistCombineReducers, FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import AsyncStorage from '@react-native-community/async-storage';
 import createSagaMiddleware from 'redux-saga';
-
-import rootReducers from 'app/store/reducers'; // where reducers is a object of reducers
-import sagas from 'app/store/sagas';
-
+import rootSaga from './sagas'
 const config = {
-  key: 'root',
-  storage: AsyncStorage,
-  blacklist: ['loadingReducer'],
-  whitelist: ['languageReducer', 'themeReducer'],
-  debug: true, //to get useful logging
+    key: 'root',
+    storage: AsyncStorage,
+    blacklist: ['themeReducer'],
+    whitelist: ['languageReducer'],
+    debug: __DEV__, //to get useful logging
 };
 
-const middleware = [];
-const sagaMiddleware = createSagaMiddleware();
+const sagaMiddleware = createSagaMiddleware()
 
-middleware.push(sagaMiddleware);
-
-const reducers = persistCombineReducers(config, rootReducers);
-const enhancers = [applyMiddleware(...middleware)];
-// const initialState = {};
-const persistConfig: any = { enhancers };
-const store = createStore(reducers, undefined, compose(...enhancers));
-const persistor = persistStore(store, persistConfig, () => {
-  //   console.log('Test', store.getState());
+const reducers = persistCombineReducers(config, allReducer);
+const store = configureStore({
+    reducer: reducers,
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            thunk: false,
+            serializableCheck: {
+                ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+            },
+        }).concat(sagaMiddleware),
+})
+sagaMiddleware.run(rootSaga);
+export const persistor = persistStore(store, {}, () => {
+    // console.log('Test', store.getState());
 });
-const configureStore = () => {
-  return { persistor, store };
-};
-
-sagaMiddleware.run(sagas);
-
-export default configureStore;
+export default store

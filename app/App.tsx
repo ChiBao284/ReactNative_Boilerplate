@@ -14,12 +14,12 @@ import {
   CombinedDarkTheme,
 } from '@config/theme-config';
 import Navigator from '@navigation/index';
-import configureStore from './store';
+import store, {persistor} from './store';
 import {IThemeState} from '@models/reducers/theme';
 import './i18n/i18n';
 import i18n from './i18n/i18n';
 import {ILanguageState} from '@models/reducers/language';
-const {persistor, store} = configureStore();
+import {useAppSelector} from './utils/hook';
 
 interface IState {
   themeReducer: IThemeState;
@@ -27,14 +27,16 @@ interface IState {
 }
 
 const RootNavigation: React.FC = () => {
-  const isDark = useSelector((state: IState) => state.themeReducer.isDark);
+  //   const isDark = useSelector((state: IState) => state.themeReducer.isDark);
+  const isDark = true;
   const paperTheme = isDark ? PaperThemeDark : PaperThemeDefault;
   const combinedTheme = isDark ? CombinedDarkTheme : CombinedDefaultTheme;
-  const language = useSelector(
-    (state: IState) => state.languageReducer.language,
-  );
+  const language = useAppSelector(state => state.languageReducer);
+
+  console.log('language', language);
+
   useEffect(() => {
-    i18n.changeLanguage(language);
+    i18n.changeLanguage('vi');
   }, []);
   return (
     <PaperProvider theme={paperTheme}>
